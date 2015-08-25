@@ -21,6 +21,7 @@
   "homepage": "https://github.com/eface2face/meteor-reactive-object-map",
   "dependencies": {
     "meteor-core": "^1.2.8",
-    "meteor-tracker": "^1.2.7"
+    "meteor-tracker": "^1.2.7",
+    "object.observe": "^0.2.4"
   }
 }

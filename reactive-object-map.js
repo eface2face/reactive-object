@@ -1,3 +1,6 @@
+require("object.observe")
+
+
 module.exports = function(Meteor) {
 	var _ = Meteor.underscore;
 	var Tracker = Meteor.Tracker;
