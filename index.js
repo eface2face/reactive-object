@@ -9,6 +9,18 @@ var Tracker = Meteor.Tracker
 require("object.observe")
 
 
+function setMap(value, observer)
+{
+	this._map.forEach(function(value)
+	{
+		Object.unobserve(value, observer)
+	})
+
+	this._map = new Map(value)
+	this._dep.changed()
+}
+
+
 function ReactiveMap(map)
 {
 	// called without `new`
@@ -22,36 +34,21 @@ function ReactiveMap(map)
 	var observer = this._dep.changed.bind(this._dep)
 
 	if(map)
-		Object.keys(map).forEach(function(key)
+		map.forEach(function(value)
 		{
-			Object.observe(map[key], observer)
+			Object.observe(value, observer)
 		})
-
-
-	var self = this
-
-	function setMap(value)
-	{
-		var map = self._map
-		Object.keys(map).forEach(function(key)
-		{
-			Object.unobserve(map[key], observer)
-		})
-
-		self._map = new Map(value)
-		self._dep.changed()
-	}
 
 
 	// Entries (globally)
 
 	this.assign = function(collection, iteratee)
 	{
-//		setMap(_.indexBy(collection, iteratee))
-		setMap(collection.map(function(entry)
+		var map = collection.map(function(entry)
 		{
 			return [entry[iteratee], entry]
-		}))
+		})
+		setMap.call(this, map, observer)
 
 		collection.forEach(function(item)
 		{
@@ -59,16 +56,15 @@ function ReactiveMap(map)
 		})
 	};
 
-	this.clear = setMap.bind(this, [])
+	this.clear = setMap.bind(this, [], observer)
 
 
 	// Entries
 
 	this.set = function(key, item) {
-		if(this._map[key] !== item)
+		if(this._map.get(key) !== item)
 		{
-			this._map[key] = item
-
+			this._map.set(key, item)
 			Object.observe(item, observer)
 
 			this._dep.changed()
@@ -77,9 +73,8 @@ function ReactiveMap(map)
 
 	this.delete = function(key)
 	{
-		Object.unobserve(this._map[key], observer)
-
-		delete this._map[key]
+		Object.unobserve(this._map.get(key), observer)
+		this._map.delete(key)
 
 		this._dep.changed()
 	};
@@ -100,30 +95,15 @@ Object.defineProperty(ReactiveMap.prototype, 'size',
 })
 
 
-// Entries
+// Proxied methods
 
-ReactiveMap.prototype.get = function(key) {
-	if (Tracker.active) this._dep.depend();
-
-	return this._map.get(key)
-};
-
-ReactiveMap.prototype.has = function(key) {
-	if (Tracker.active) this._dep.depend();
-
-	return this._map.has(key)
-};
-
-
-// Access functions
-
-['filter', 'forEach', 'keys', 'map', 'sortBy', 'values'].forEach(
-	function(methodName)
+var methodNames = ['forEach', 'get', 'has', 'keys', 'values']
+methodNames.forEach(function(methodName)
 {
-	ReactiveMap.prototype[methodName] = function(value) {
+	ReactiveMap.prototype[methodName] = function() {
 		if (Tracker.active) this._dep.depend();
 
-		return _[methodName](this._map, value);
+		return this._map[methodName].apply(this._map, arguments)
 	};
 })
 
