@@ -1,2 +1,2 @@
-# meteor-reactive-object-map
-Reactive map helper for meteor blaze templates
+# Reactive Object Map
+Reactive map powered by Tracker
