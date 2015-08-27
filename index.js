@@ -13,8 +13,8 @@ function ReactiveMap(map)
 	if (!(this instanceof ReactiveMap))
 		return new ReactiveMap(map);
 
-	this._map = map || {};
-	this._dep = new Tracker.Dependency;
+	this._map = (map instanceof Map) ? map : new Map(map)
+	this._dep = new Tracker.Dependency
 
 
 	var observer = this._dep.changed.bind(this._dep)
@@ -78,13 +78,18 @@ function ReactiveMap(map)
 };
 
 
-ReactiveMap.prototype.size = function() {
-	return this.keys().length;
-};
+Object.defineProperty(ReactiveMap, 'length', {enumerable: true, value: 0})
 
-ReactiveMap.prototype.toString = function() {
-	return 'ReactiveObject'+this._map.toSource()
-};
+Object.defineProperty(ReactiveMap.prototype, 'size',
+{
+	enumerable: true,
+	get: function()
+	{
+		if (Tracker.active) this._dep.depend();
+
+		return this._map.size
+	}
+})
 
 
 // Entries
@@ -92,17 +97,20 @@ ReactiveMap.prototype.toString = function() {
 ReactiveMap.prototype.get = function(key) {
 	if (Tracker.active) this._dep.depend();
 
-	return this._map[key];
+	return this._map.get(key)
 };
 
 ReactiveMap.prototype.has = function(key) {
-	return this.get(key) !== undefined;
+	if (Tracker.active) this._dep.depend();
+
+	return this._map.has(key)
 };
 
 
 // Access functions
 
-['filter', 'keys', 'map', 'sortBy', 'values'].forEach(function(methodName)
+['filter', 'forEach', 'keys', 'map', 'sortBy', 'values'].forEach(
+	function(methodName)
 {
 	ReactiveMap.prototype[methodName] = function(value) {
 		if (Tracker.active) this._dep.depend();
