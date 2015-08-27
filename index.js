@@ -28,16 +28,18 @@ function ReactiveMap(map)
 		})
 
 
+	var self = this
+
 	function setMap(value)
 	{
-		var map = this._map
+		var map = self._map
 		Object.keys(map).forEach(function(key)
 		{
 			Object.unobserve(map[key], observer)
 		})
 
-		this._map = value
-		this._dep.changed()
+		self._map = value
+		self._dep.changed()
 	}
 
 
