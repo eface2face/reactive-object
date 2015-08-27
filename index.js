@@ -1,5 +1,7 @@
-var _      = require('lodash')
+var lodash = require('lodash')
 var Meteor = require('meteor-core')(lodash)
+
+var _ = lodash
 
 require('meteor-tracker')(Meteor)
 var Tracker = Meteor.Tracker
