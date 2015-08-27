@@ -38,7 +38,7 @@ function ReactiveMap(map)
 			Object.unobserve(map[key], observer)
 		})
 
-		self._map = value
+		self._map = new Map(value)
 		self._dep.changed()
 	}
 
@@ -47,7 +47,11 @@ function ReactiveMap(map)
 
 	this.assign = function(collection, iteratee)
 	{
-		setMap(_.indexBy(collection, iteratee))
+//		setMap(_.indexBy(collection, iteratee))
+		setMap(collection.map(function(entry)
+		{
+			return [entry[iteratee], entry]
+		}))
 
 		collection.forEach(function(item)
 		{
@@ -55,7 +59,7 @@ function ReactiveMap(map)
 		})
 	};
 
-	this.clear = setMap.bind(this, {})
+	this.clear = setMap.bind(this, [])
 
 
 	// Entries
