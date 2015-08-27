@@ -1,14 +1,17 @@
-var _       = require('lodash')
-var Tracker = require('meteor-tracker')
+var _      = require('lodash')
+var Meteor = require('meteor-core')(lodash)
+
+require('meteor-tracker')(Meteor)
+var Tracker = Meteor.Tracker
 
 require("object.observe")
 
 
-function ReactiveObjectMap(map)
+function ReactiveMap(map)
 {
 	// called without `new`
-	if (!(this instanceof ReactiveObjectMap))
-		return new ReactiveObjectMap(map);
+	if (!(this instanceof ReactiveMap))
+		return new ReactiveMap(map);
 
 	this._map = map || {};
 	this._dep = new Tracker.Dependency;
@@ -75,46 +78,25 @@ function ReactiveObjectMap(map)
 };
 
 
-ReactiveObjectMap.prototype.size = function() {
+ReactiveMap.prototype.size = function() {
 	return this.keys().length;
 };
 
-ReactiveObjectMap.prototype.toString = function() {
-	return 'ReactiveObjectMap{' + this.get() + '}';
-};
-
-ReactiveObjectMap.prototype._numListeners = function() {
-	// Tests want to know.
-	// Accesses a private field of Tracker.Dependency.
-	return Object.keys(this._dep._dependentsById).length
+ReactiveMap.prototype.toString = function() {
+	return 'ReactiveObject'+this._map.toSource()
 };
 
 
 // Entries
 
-ReactiveObjectMap.prototype.get = function(key) {
+ReactiveMap.prototype.get = function(key) {
 	if (Tracker.active) this._dep.depend();
 
 	return this._map[key];
 };
 
-ReactiveObjectMap.prototype.has = function(key) {
-	if (Tracker.active) this._dep.depend();
-
-	return this.hasOwnProperty(key);
-};
-
-
-// Entries attributes
-
-ReactiveObjectMap.prototype.setAttribute = function(key, attr, value) {
-	var item = this._map[key]
-	if(item[attr] !== value)
-		 item[attr] = value
-};
-
-ReactiveObjectMap.prototype.getAttribute = function(key, attr) {
-	return this.get(key)[attr];
+ReactiveMap.prototype.has = function(key) {
+	return this.get(key) !== undefined;
 };
 
 
@@ -122,7 +104,7 @@ ReactiveObjectMap.prototype.getAttribute = function(key, attr) {
 
 ['filter', 'keys', 'map', 'sortBy', 'values'].forEach(function(methodName)
 {
-	ReactiveObjectMap.prototype[methodName] = function(value) {
+	ReactiveMap.prototype[methodName] = function(value) {
 		if (Tracker.active) this._dep.depend();
 
 		return _[methodName](this._map, value);
@@ -130,4 +112,4 @@ ReactiveObjectMap.prototype.getAttribute = function(key, attr) {
 })
 
 
-module.exports = ReactiveObjectMap
+module.exports = ReactiveMap

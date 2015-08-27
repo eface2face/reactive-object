@@ -1,2 +1,2 @@
-# Reactive Object Map
-Reactive map powered by Tracker
+# Reactive Object
+Reactive object for Tracker
