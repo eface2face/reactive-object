@@ -4,24 +4,24 @@ var Tracker = require('meteor-tracker')
 require("object.observe")
 
 
-function ReactiveObjectMap()
+function ReactiveObjectMap(map)
 {
 	// called without `new`
 	if (!(this instanceof ReactiveObjectMap))
-		return new ReactiveObjectMap();
+		return new ReactiveObjectMap(map);
 
-	var self = this
-
-
-	this._map = {};
+	this._map = map || {};
 	this._dep = new Tracker.Dependency;
 
 
-	function observer(changes)
-	{
-		console.log(changes)
-		self._dep.changed();
-	}
+	var observer = this._dep.changed.bind(this._dep)
+
+	if(map)
+		Object.keys(map).forEach(function(key)
+		{
+			Object.observe(map[key], observer)
+		})
+
 
 	function setMap(value)
 	{
@@ -120,7 +120,7 @@ ReactiveObjectMap.prototype.getAttribute = function(key, attr) {
 
 // Access functions
 
-['keys', 'values', 'filter', 'sortBy', 'map'].forEach(function(methodName)
+['filter', 'keys', 'map', 'sortBy', 'values'].forEach(function(methodName)
 {
 	ReactiveObjectMap.prototype[methodName] = function(value) {
 		if (Tracker.active) this._dep.depend();
