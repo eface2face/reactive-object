@@ -1,9 +1,4 @@
-var lodash = require('lodash')
-var Meteor = require('meteor-core')(lodash)
-
-var _ = lodash
-
-require('meteor-tracker')(Meteor)
+module.exports = function(Meteor) {
 var Tracker = Meteor.Tracker
 
 require("object.observe")
@@ -122,4 +117,5 @@ methodNames.forEach(function(methodName)
 })
 
 
-module.exports = ReactiveMap
+return ReactiveMap
+}
