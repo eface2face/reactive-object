@@ -94,10 +94,24 @@ Object.defineProperty(ReactiveMap.prototype, 'size',
 	}
 })
 
+ReactiveMap.prototype.values = function()
+{
+	if(Tracker.active) this._dep.depend()
+
+	var result = []
+
+	var it = this._map.values()
+	var itValue
+	while((itValue = it.next()) && !itValue.done)
+		result.push(itValue.value)
+
+	return result
+}
+
 
 // Proxied methods
 
-var methodNames = ['forEach', 'get', 'has', 'keys', 'values']
+var methodNames = ['forEach', 'get', 'has', 'keys']
 methodNames.forEach(function(methodName)
 {
 	ReactiveMap.prototype[methodName] = function() {
