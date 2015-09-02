@@ -1,28 +1,25 @@
 {
-  "name": "reactive-map",
+  "name": "reactive-object",
   "version": "0.0.0",
-  "description": "ReactiveMap for Tracker",
+  "description": "Reactive object for Tracker",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:eface2face/reactive-map.git"
+    "url": "git@github.com:eface2face/reactive-object.git"
   },
-  "author": "Sergio Garcia Murillo",
-  "contributors": [
-    "Jesús Leganés Combarro 'piranna' <piranna@gmail.com>"
-  ],
+  "author": "Jesús Leganés Combarro 'piranna' <piranna@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/eface2face/reactive-map/issues"
+    "url": "https://github.com/eface2face/reactive-object/issues"
   },
-  "homepage": "https://github.com/eface2face/reactive-map",
+  "homepage": "https://github.com/eface2face/reactive-object",
   "dependencies": {
-    "lodash": "^3.10.1",
     "meteor-tracker": "^1.2.7",
-    "object.observe": "^0.2.4"
+    "object.observe": "^0.2.4",
+    "robserve": "0.0.2"
   },
   "optionalDependencies": {
     "meteor-core": "^1.2.8"

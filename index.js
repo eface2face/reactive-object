@@ -1,121 +1,58 @@
 module.exports = function(Meteor) {
 var Tracker = Meteor.Tracker
 
-require("object.observe")
+require('object.observe')
+
+var robserve = require('robserve')
 
 
-function setMap(value, observer)
-{
-	this._map.forEach(function(value)
-	{
-		Object.unobserve(value, observer)
-	})
-
-	this._map = new Map(value)
-	this._dep.changed()
-}
-
-
-function ReactiveMap(map)
+function ReactiveObject(object)
 {
 	// called without `new`
-	if (!(this instanceof ReactiveMap))
-		return new ReactiveMap(map);
+	if (!(this instanceof ReactiveObject))
+		return new ReactiveObject(map)
 
-	this._map = (map instanceof Map) ? map : new Map(map)
-	this._dep = new Tracker.Dependency
+	object = object || {}
 
+	var dep      = new Tracker.Dependency
+	var observer = dep.changed.bind(dep)
 
-	var observer = this._dep.changed.bind(this._dep)
-
-	if(map)
-		map.forEach(function(value)
-		{
-			Object.observe(value, observer)
-		})
-
-
-	// Entries (globally)
-
-	this.assign = function(collection, iteratee)
-	{
-		var map = collection.map(function(entry)
-		{
-			return [entry[iteratee], entry]
-		})
-		setMap.call(this, map, observer)
-
-		collection.forEach(function(item)
-		{
-			Object.observe(item, observer)
-		})
-	};
-
-	this.clear = setMap.bind(this, [], observer)
+	new robserve(object, observer)
 
 
 	// Entries
 
-	this.set = function(key, item) {
-		if(this._map.get(key) !== item)
+	this.get = function(path)
+	{
+		if(Tracker.active) dep.depend()
+
+		var result = object
+		path.split('.').forEach(function(key)
 		{
-			this._map.set(key, item)
-			Object.observe(item, observer)
+			result = result[key]
+		})
 
-			this._dep.changed()
-		}
-	};
-
-	this.delete = function(key)
-	{
-		Object.unobserve(this._map.get(key), observer)
-		this._map.delete(key)
-
-		this._dep.changed()
-	};
-};
-
-
-Object.defineProperty(ReactiveMap, 'length', {enumerable: true, value: 0})
-
-Object.defineProperty(ReactiveMap.prototype, 'size',
-{
-	enumerable: true,
-	get: function()
-	{
-		if (Tracker.active) this._dep.depend();
-
-		return this._map.size
+		return result
 	}
-})
 
-ReactiveMap.prototype.values = function()
-{
-	if(Tracker.active) this._dep.depend()
+	this.set = function(path, value)
+	{
+		path = path.split('.')
+		var key = path.pop()
 
-	var result = []
+		var aux = object
+		path.forEach(function(key)
+		{
+			aux = aux[key]
+		})
 
-	var it = this._map.values()
-	var itValue
-	while((itValue = it.next()) && !itValue.done)
-		result.push(itValue.value)
-
-	return result
+		aux[key] = value
+	}
 }
 
 
-// Proxied methods
-
-var methodNames = ['forEach', 'get', 'has', 'keys']
-methodNames.forEach(function(methodName)
-{
-	ReactiveMap.prototype[methodName] = function() {
-		if (Tracker.active) this._dep.depend();
-
-		return this._map[methodName].apply(this._map, arguments)
-	};
-})
+Object.defineProperty(ReactiveObject, 'length', {enumerable: true, value: 1})
 
 
-return ReactiveMap
+return ReactiveObject
 }
