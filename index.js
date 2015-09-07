@@ -10,7 +10,7 @@ function ReactiveObject(object)
 {
 	// called without `new`
 	if (!(this instanceof ReactiveObject))
-		return new ReactiveObject(map)
+		return new ReactiveObject(object)
 
 	object = object || {}
 
@@ -27,7 +27,11 @@ function ReactiveObject(object)
 		if(Tracker.active) dep.depend()
 
 		var result = object
-		path.split('.').forEach(function(key)
+
+		if(path == undefined)       path = []
+		if(typeof path == 'string') path = path.split('.')
+
+		path.forEach(function(key)
 		{
 			result = result[key]
 		})
@@ -37,7 +41,15 @@ function ReactiveObject(object)
 
 	this.set = function(path, value)
 	{
-		path = path.split('.')
+		if(arguments.length < 2)
+		{
+			value = path
+			path = undefined
+		}
+
+		if(path == undefined)       path = []
+		if(typeof path == 'string') path = path.split('.')
+
 		var key = path.pop()
 
 		var aux = object

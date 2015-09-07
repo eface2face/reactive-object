@@ -19,7 +19,7 @@
   "dependencies": {
     "meteor-tracker": "^1.2.7",
     "object.observe": "^0.2.4",
-    "robserve": "0.0.2"
+    "robserve": "eface2face/Observe"
   },
   "optionalDependencies": {
     "meteor-core": "^1.2.8"
