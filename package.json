@@ -4,24 +4,21 @@
   "description": "Reactive object for Tracker",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node tape test.js"
   },
   "repository": {
     "type": "git",
     "url": "git@github.com:eface2face/reactive-object.git"
   },
-  "author": "Jesús Leganés Combarro 'piranna' <piranna@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/eface2face/reactive-object/issues"
   },
   "homepage": "https://github.com/eface2face/reactive-object",
-  "dependencies": {
-    "meteor-tracker": "^1.2.7",
-    "object.observe": "^0.2.4",
-    "robserve": "eface2face/Observe"
+  "devDependencies": {
+    "tape": "^4.2.0"
   },
-  "optionalDependencies": {
-    "meteor-core": "^1.2.8"
+  "dependencies": {
+    "debug": "^2.2.0"
   }
 }
