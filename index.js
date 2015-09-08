@@ -147,7 +147,7 @@ module.exports = function(Meteor) {
 				//Observe new one
 				observe(root);
 				//And fire dependency
-				this.dep.changed();
+				dep.changed();
 			} else {
 				//Get path and value
 				var path = arguments[0] || [];
