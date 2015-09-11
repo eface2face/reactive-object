@@ -159,17 +159,20 @@ module.exports = function(Meteor) {
 				//Remove root
 				var object = root;
 				
+				//Get last key
+				var key = path.pop();
+				
 				//Walk path to find the required value
 				path.forEach(function(key) {
 					//Get child property
 					object = object[key];
 				});
 				//Unobserve object
-				unobserve(object);
+				unobserve(object[key]);
 				//Set property
-				object = value;
+				object[key] = value;
 				//Observe new one
-				observe(root);
+				observe(value);
 			}
 		}
 	}

@@ -107,3 +107,34 @@ test('Observe nested object delete', function (t) {
 		a = 2;
 	},10);
 });
+
+test('Setter', function (t) {
+	Meteor.Tracker.changed = function() {
+		debug('Meteor.Tracker.changed'); 
+	};
+	//Only one expected
+	t.plan(1);
+	var a = { b: 1 };
+	//Create reactive object
+	var r = new ReactiveObject(a);
+	//Set it
+	r.set('b', 2);
+	//Check values
+	t.ok(a.b==2);
+});
+
+
+test('Nested setter', function (t) {
+	Meteor.Tracker.changed = function() {
+		debug('Meteor.Tracker.changed'); 
+	};
+	//Only one expected
+	t.plan(1);
+	var a = { b: { c: 1 }};
+	//Create reactive object
+	var r = new ReactiveObject(a);
+	//Set it
+	r.set('b.c', 2);
+	//Check values
+	t.ok(a.b.c==2);
+});
