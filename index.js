@@ -11,7 +11,7 @@ module.exports = function(Meteor) {
 			return new ReactiveObject(object);
 
 		//Store the object we are observing
-		var root = object || {};
+		var root = object;
 
 		//Tracker dependencies
 		var dep  = new Tracker.Dependency;

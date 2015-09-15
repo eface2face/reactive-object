@@ -138,3 +138,24 @@ test('Nested setter', function (t) {
 	//Check values
 	t.ok(a.b.c==2);
 });
+
+test('Observe simple object, start empty', function (t) {
+	Meteor.Tracker.changed = function() {
+		debug('Meteor.Tracker.changed'); 
+		t.ok(true)
+	};
+	//Only one expected
+	t.plan(2);
+	//Object
+	var o = { a: 1 };
+	//Create reactive object
+	var r = new ReactiveObject();
+	//Set it
+	r.set(o);
+	
+	//Change it later
+	setTimeout (function() {
+		debug('Changed nested object');
+		o.a = 2;
+	},10);
+});
