@@ -51,7 +51,7 @@ module.exports = function(Meteor) {
 							//Unobserve it
 							unobserve(change.removed[i]);
 						//Check the added ones
-						for (var i=0,j=change.index+1;i<change.addedCount;i++)
+						for (var i=0,j=change.index;i<change.addedCount;i++)
 							//Observe them
 							observe(change.object[j]);
 				}
