@@ -26,6 +26,9 @@ module.exports = function(Meteor) {
 				// object: The changed object after the change was made.
 				// type: A string indicating the type of change taking place. One of "add", "update", or "delete".
 				// oldValue: Only for "update" and "delete" types. The value before the change.
+				// index: Only for the "splice" type. The index at which the change occurred.
+				// removed: Only for the "splice" type. An array of the removed elements.
+				// addedCount: Only for the "splice" type. The number of elements added.
 				//Depending the type of change
 				switch(change.type) {
 					case "add":
@@ -42,6 +45,15 @@ module.exports = function(Meteor) {
 						//Unobserve it
 						unobserve(change.oldValue);
 						break;
+					case "splice":
+						//Tthe removed items
+						for(var i=0;i<change.removed.length;i++)
+							//Unobserve it
+							unobserve(change.removed[i]);
+						//Check the added ones
+						for (var i=0,j=change.index+1;i<change.addedCount;i++)
+							//Observe them
+							observe(change.object[j]);
 				}
 			});
 			//And fire dependency
@@ -82,18 +94,22 @@ module.exports = function(Meteor) {
 			//Ensure it is an object and not falsey
 			if (object && typeof object === 'object')
 			{
-				//Debug
-				debug('Observing object ',object)
-				//Observe object first
-				Object.observe(object,observer,["add", "update", "delete"]);
 				//Check type of observerd object
 				if (Array.isArray(object)) {
+					//Debug
+					debug('Observing array ',object)
+					//Observe array for splice
+					Array.observe(object,observer,["add", "update", "delete","splice"]);
 					//Now observe  values recursively
 					object.forEach(function(value) {
 						//recursivelly observe it alseo
 						observe(value);
 					});
 				} else {
+					//Debug
+					debug('Observing object ',object)
+					//Observe object first
+					Object.observe(object,observer,["add", "update", "delete"]);
 					//Now observe  properties recursively
 					for (var key in object) {
 						if (object.hasOwnProperty(key)) {
