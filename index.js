@@ -64,18 +64,22 @@ module.exports = function(Meteor) {
 		var unobserve = function(object) {
 			//Ensure it is an object and not falsey
 			if (object && typeof object === 'object') {
-				//Debug
-				debug('Unobserving object ',object)
-				//Observe object first
-				Object.unobserve(object,observer);
 				//Check type of observerd object
 				if (Array.isArray(object)) {
+					//Debug
+					debug('Unobserving object ',object);
+					//Observe object first
+					Object.unobserve(object,observer);
 					//Now observe  values recursively
 					object.forEach(function(value) {
 						//recursivelly observe it alseo
 						unobserve(value);
 					});
 				} else {
+					//Debug
+					debug('Unobserving object ',object)
+					//Observe object first
+					Object.unobserve(object,observer);
 					//Now observe  properties recursively
 					for (var key in object) {
 						if (object.hasOwnProperty(key)) {
@@ -97,7 +101,7 @@ module.exports = function(Meteor) {
 				//Check type of observerd object
 				if (Array.isArray(object)) {
 					//Debug
-					debug('Observing array ',object)
+					debug('Observing array ',object);
 					//Observe array for splice
 					Array.observe(object,observer,["add", "update", "delete","splice"]);
 					//Now observe  values recursively
@@ -107,7 +111,7 @@ module.exports = function(Meteor) {
 					});
 				} else {
 					//Debug
-					debug('Observing object ',object)
+					debug('Observing object ',object);
 					//Observe object first
 					Object.observe(object,observer,["add", "update", "delete"]);
 					//Now observe  properties recursively
@@ -148,7 +152,7 @@ module.exports = function(Meteor) {
 			});
 
 			return object;
-		}
+		};
 
 		// Settter for root object and properties
 		this.set = function()
@@ -190,7 +194,7 @@ module.exports = function(Meteor) {
 				//Observe new one
 				observe(value);
 			}
-		}
+		};
 	}
 
 	return ReactiveObject;
