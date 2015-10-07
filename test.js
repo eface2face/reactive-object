@@ -138,3 +138,68 @@ test('Nested setter', function (t) {
 	//Check values
 	t.ok(a.b.c==2);
 });
+
+test('Observe simple object, start empty', function (t) {
+	Meteor.Tracker.changed = function() {
+		debug('Meteor.Tracker.changed'); 
+		t.ok(true)
+	};
+	//Only one expected
+	t.plan(2);
+	//Object
+	var o = { a: 1 };
+	//Create reactive object
+	var r = new ReactiveObject();
+	//Set it
+	r.set(o);
+	
+	//Change it later
+	setTimeout (function() {
+		debug('Changed nested object');
+		o.a = 2;
+	},10);
+});
+
+
+test('Observe array delete', function (t) {
+	Meteor.Tracker.changed = function() {
+		debug('Meteor.Tracker.changed'); 
+		t.ok(true)
+	};
+	//Only one expected
+	t.plan(2);
+	//Object
+	var o = { a: [{id: 1},{id:2}] };
+	//Create reactive object
+	var r = new ReactiveObject(o);
+	//delete first 
+	o.a.splice(0,1);
+	
+	//Change it later
+	setTimeout (function() {
+		debug('Changed nested object');
+		o.a[0].id = 3;
+	},10);
+});
+
+
+test('Observe array add', function (t) {
+	Meteor.Tracker.changed = function() {
+		debug('Meteor.Tracker.changed'); 
+		t.ok(true)
+	};
+	//Only one expected
+	t.plan(2);
+	//Object
+	var o = { a: [{id: 1},{id:2}] };
+	//Create reactive object
+	var r = new ReactiveObject(o);
+	//delete first 
+	o.a.push({id:3});
+	
+	//Change it later
+	setTimeout (function() {
+		debug('Changed nested object');
+		o.a[2].id = 4;
+	},10);
+});
