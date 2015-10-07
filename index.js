@@ -1,5 +1,6 @@
 var debug = require('debug')('reactive-object');
 
+
 module.exports = function(Meteor) {
 
 	var Tracker = Meteor.Tracker;
@@ -17,8 +18,8 @@ module.exports = function(Meteor) {
 		var dep  = new Tracker.Dependency;
 
 		var observer = function (changes) {
-			//Debug
-			debug('Changes observed',changes)
+			debug('changes observed: %o', changes);
+
 			//For each change
 			changes.forEach(function(change) {
 				//The properties of these change objects are:
@@ -66,8 +67,8 @@ module.exports = function(Meteor) {
 			if (object && typeof object === 'object') {
 				//Check type of observerd object
 				if (Array.isArray(object)) {
-					//Debug
-					debug('Unobserving object ',object);
+					debug('unobserving array: %o', object);
+
 					//Observe object first
 					Object.unobserve(object,observer);
 					//Now observe  values recursively
@@ -76,8 +77,8 @@ module.exports = function(Meteor) {
 						unobserve(value);
 					});
 				} else {
-					//Debug
-					debug('Unobserving object ',object)
+					debug('unobserving object: %o', object);
+
 					//Observe object first
 					Object.unobserve(object,observer);
 					//Now observe  properties recursively
@@ -100,8 +101,8 @@ module.exports = function(Meteor) {
 			{
 				//Check type of observerd object
 				if (Array.isArray(object)) {
-					//Debug
-					debug('Observing array ',object);
+					debug('observing array: %o', object);
+
 					//Observe array for splice
 					Array.observe(object,observer,["add", "update", "delete","splice"]);
 					//Now observe  values recursively
@@ -110,8 +111,8 @@ module.exports = function(Meteor) {
 						observe(value);
 					});
 				} else {
-					//Debug
-					debug('Observing object ',object);
+					debug('observing object: %o', object);
+
 					//Observe object first
 					Object.observe(object,observer,["add", "update", "delete"]);
 					//Now observe  properties recursively
