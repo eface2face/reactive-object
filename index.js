@@ -1,9 +1,9 @@
 var debug = require('debug')('reactive-object');
 
 module.exports = function(Meteor) {
-	
+
 	var Tracker = Meteor.Tracker;
-	
+
 	function ReactiveObject(object)
 	{
 		// called without `new`
@@ -15,7 +15,7 @@ module.exports = function(Meteor) {
 
 		//Tracker dependencies
 		var dep  = new Tracker.Dependency;
-		
+
 		var observer = function (changes) {
 			//Debug
 			debug('Changes observed',changes)
@@ -47,7 +47,7 @@ module.exports = function(Meteor) {
 			//And fire dependency
 			dep.changed();
 		};
-		
+
 		//The recursive unobserve function
 		var unobserve = function(object) {
 			//Ensure it is an object and not falsey
@@ -76,7 +76,7 @@ module.exports = function(Meteor) {
 				}
 			}
 		};
-		
+
 		//The recursive observer function
 		var observe = function(object) {
 			//Ensure it is an object and not falsey
@@ -106,32 +106,23 @@ module.exports = function(Meteor) {
 				}
 			}
 		};
-		
+
 		//Observe object recursivelly
 		observe(root);
 
-		// Gettter for root object and properties
-		this.get = function(path) {
-			
+		// Gettter for root object or a property in it
+		this.get = function(key) {
+
 			//If running inside a an active Tracker computation
 			if(Tracker.active)
 				//Add a dependency
 				dep.depend();
 
-			//Start searching from root object
-			var object = root;
-
-			//Sanetize path inputs
-			path = path || [];
-			if(typeof path === 'string') path = path.split('.');
-
-			//Walk path
-			path.forEach(function(key) {
-				//Get child property
-				object = object[key];
-			});
-
-			return object;
+			if (key) {
+				return root[key];
+			} else {
+				return root;
+			}
 		}
 
 		// Settter for root object and properties
@@ -158,10 +149,10 @@ module.exports = function(Meteor) {
 
 				//Remove root
 				var object = root;
-				
+
 				//Get last key
 				var key = path.pop();
-				
+
 				//Walk path to find the required value
 				path.forEach(function(key) {
 					//Get child property
