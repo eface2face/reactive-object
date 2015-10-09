@@ -150,7 +150,7 @@ module.exports = function(Meteor) {
 		this.set = function()
 		{
 			//If only called with one argument
-			if(arguments.length < 2)
+			if(arguments.length === 1)
 			{
 				//Unobserve object
 				unobserve(root);
@@ -161,31 +161,31 @@ module.exports = function(Meteor) {
 				//And fire dependency
 				dep.changed();
 			} else {
-				//Get path and value
-				var path = arguments[0] || [];
+				//Get path, value and corresponding object
+				var key = arguments[0];
 				var value = arguments[1];
+				var object = root[key];
 
-				if(typeof path == 'string')
-					path = path.split('.');
-
-				//Remove root
-				var object = root;
-
-				//Get last key
-				var key = path.pop();
-
-				//Walk path to find the required value
-				path.forEach(function(key) {
-					//Get child property
-					object = object[key];
-				});
 				//Unobserve object
-				unobserve(object[key]);
+				unobserve(object);
 				//Set property
-				object[key] = value;
+				root[key] = value;
 				//Observe new one
 				observe(value);
 			}
+		};
+
+		this.delete = function(key) {
+			if (!root.hasOwnProperty(key))
+				return;
+
+			//Get corresponding object
+			var object = root[key];
+
+			// Remove from root object
+			delete root[key];
+			//Unobserve object
+			unobserve(object);
 		};
 	}
 
