@@ -203,3 +203,6 @@ test('Observe array add', function (t) {
 		o.a[2].id = 4;
 	},10);
 });
+
+
+//TODO: Add tests for keys(),values(),entries()

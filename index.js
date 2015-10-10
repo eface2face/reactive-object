@@ -174,6 +174,47 @@ module.exports = function(Meteor) {
 				observe(value);
 			}
 		};
+		
+		this.keys = function() {
+			//If running inside a an active Tracker computation
+			if(Tracker.active)
+				//Add a dependency
+				dep.depend();
+			//Return object keys
+			return Object.keys(root);
+		}
+		
+		this.values = function() {
+			var values = [];
+			//If running inside a an active Tracker computation
+			if(Tracker.active)
+				//Add a dependency
+				dep.depend();
+			//For each key in object
+			for (var key in Object.keys(root))
+				if (root.hasOwnProperty (key))
+					//Add to values
+					values.push(root[key]);
+			//REturn keys
+			return values;
+			
+		};
+		
+		this.entries = function() {
+			var entries = [];
+			//If running inside a an active Tracker computation
+			if(Tracker.active)
+				//Add a dependency
+				dep.depend();
+			//For each key in object
+			for (var key in Object.keys(root))
+				if (root.hasOwnProperty (key))
+					//Add to values
+					entries.push([key,root[key]]);
+			//REturn keys
+			return entries;
+			
+		};
 
 		this.delete = function(key) {
 			if (!root.hasOwnProperty(key))
