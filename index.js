@@ -182,7 +182,7 @@ module.exports = function(Meteor) {
 				dep.depend();
 			//Return object keys
 			return Object.keys(root);
-		}
+		};
 		
 		this.values = function() {
 			var values = [];
