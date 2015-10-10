@@ -175,6 +175,15 @@ module.exports = function(Meteor) {
 			}
 		};
 		
+		this.has = function(key) {
+			//If running inside a an active Tracker computation
+			if(Tracker.active)
+				//Add a dependency
+				dep.depend();
+			//Check if it has the key
+			return root.hasOwnProperty (key)
+		};
+		
 		this.keys = function() {
 			//If running inside a an active Tracker computation
 			if(Tracker.active)

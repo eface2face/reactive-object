@@ -205,4 +205,4 @@ test('Observe array add', function (t) {
 });
 
 
-//TODO: Add tests for keys(),values(),entries()
+//TODO: Add tests for keys(),values(),entries(),has()
