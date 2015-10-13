@@ -133,13 +133,13 @@ module.exports = function(Meteor) {
 
 		// Gettter for root object or a property in it
 		this.get = function(key) {
-			if (!root)
-				return;
-
 			//If running inside a an active Tracker computation
 			if(Tracker.active)
 				//Add a dependency
 				dep.depend();
+
+			if (!root)
+				return;
 
 			if (key) {
 				return root[key];
@@ -178,57 +178,60 @@ module.exports = function(Meteor) {
 		};
 
 		this.has = function(key) {
+			//If running inside a an active Tracker computation
+			if(Tracker.active)
+				//Add a dependency
+				dep.depend();
+
 			if (!root)
 				return;
 
-			//If running inside a an active Tracker computation
-			if(Tracker.active)
-				//Add a dependency
-				dep.depend();
 			//Check if it has the key
-			return root.hasOwnProperty (key)
+			return root.hasOwnProperty(key)
 		};
 
 		this.keys = function() {
-			if (!root)
-				return [];
-
 			//If running inside a an active Tracker computation
 			if(Tracker.active)
 				//Add a dependency
 				dep.depend();
+
+			if (!root)
+				return [];
+
 			//Return object keys
 			return Object.keys(root);
 		};
 
-		this.values = function() {
-			if (!root)
-				return [];
+		// this.values = function() {
+		// 	var values = [];
+		// 	//If running inside a an active Tracker computation
+		// 	if(Tracker.active)
+		// 		//Add a dependency
+		// 		dep.depend();
 
-			var values = [];
-			//If running inside a an active Tracker computation
-			if(Tracker.active)
-				//Add a dependency
-				dep.depend();
-			//For each key in object
-			for (var key in Object.keys(root))
-				if (root.hasOwnProperty (key))
-					//Add to values
-					values.push(root[key]);
-			//REturn keys
-			return values;
+		// 	if (!root)
+		// 		return [];
 
-		};
+		// 	//For each key in object
+		// 	for (var key in Object.keys(root))
+		// 		if (root.hasOwnProperty (key))
+		// 			//Add to values
+		// 			values.push(root[key]);
+		// 	//REturn keys
+		// 	return values;
+		// };
 
 		this.entries = function() {
-			if (!root)
-				return [];
-
 			var entries = [];
 			//If running inside a an active Tracker computation
 			if(Tracker.active)
 				//Add a dependency
 				dep.depend();
+
+			if (!root)
+				return [];
+
 			//For each key in object
 			for (var key in Object.keys(root))
 				if (root.hasOwnProperty (key))
@@ -236,7 +239,6 @@ module.exports = function(Meteor) {
 					entries.push([key,root[key]]);
 			//REturn keys
 			return entries;
-
 		};
 
 		this.delete = function(key) {
