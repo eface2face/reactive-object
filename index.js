@@ -203,24 +203,24 @@ module.exports = function(Meteor) {
 			return Object.keys(root);
 		};
 
-		// this.values = function() {
-		// 	var values = [];
-		// 	//If running inside a an active Tracker computation
-		// 	if(Tracker.active)
-		// 		//Add a dependency
-		// 		dep.depend();
+		this.values = function() {
+			var values = [];
+			//If running inside a an active Tracker computation
+			if(Tracker.active)
+				//Add a dependency
+				dep.depend();
 
-		// 	if (!root)
-		// 		return [];
+			if (!root)
+				return [];
 
-		// 	//For each key in object
-		// 	for (var key in Object.keys(root))
-		// 		if (root.hasOwnProperty (key))
-		// 			//Add to values
-		// 			values.push(root[key]);
-		// 	//REturn keys
-		// 	return values;
-		// };
+			//For each key in object
+			for (var key in Object.keys(root))
+				if (root.hasOwnProperty (key))
+					//Add to values
+					values.push(root[key]);
+			//REturn keys
+			return values;
+		};
 
 		this.entries = function() {
 			var entries = [];
