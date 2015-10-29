@@ -175,7 +175,6 @@ module.exports = function(Meteor) {
 
 				//Observe new one
 				observe(value);
-
 			}
 		};
 		
