@@ -133,11 +133,13 @@ module.exports = function(Meteor) {
 
 		// Gettter for root object or a property in it
 		this.get = function(key) {
-
 			//If running inside a an active Tracker computation
 			if(Tracker.active)
 				//Add a dependency
 				dep.depend();
+
+			if (!root)
+				return;
 
 			if (key) {
 				return root[key];
@@ -160,7 +162,7 @@ module.exports = function(Meteor) {
 				observe(root);
 				//And fire dependency
 				dep.changed();
-			} else {
+			} else if (root) {
 				//Get path, value and corresponding object
 				var key = arguments[0];
 				var value = arguments[1];
@@ -182,6 +184,10 @@ module.exports = function(Meteor) {
 			if(Tracker.active)
 				//Add a dependency
 				dep.depend();
+
+			if (!root)
+				return;
+
 			//Check if it has the key
 			return root.hasOwnProperty (key)
 		};
@@ -191,6 +197,10 @@ module.exports = function(Meteor) {
 			if(Tracker.active)
 				//Add a dependency
 				dep.depend();
+
+			if (!root)
+				return [];
+
 			//Return object keys
 			return Object.keys(root);
 		};
@@ -202,6 +212,9 @@ module.exports = function(Meteor) {
 				//Add a dependency
 				dep.depend();
 
+			if (!root)
+				return [];
+
 			//For each key in object
 			for (var key in root)
 				if (root.hasOwnProperty (key))
@@ -210,7 +223,6 @@ module.exports = function(Meteor) {
 
 			//REturn keys
 			return values;
-			
 		};
 		
 		this.entries = function() {
@@ -219,7 +231,10 @@ module.exports = function(Meteor) {
 			if(Tracker.active)
 				//Add a dependency
 				dep.depend();
-			
+
+			if (!root)
+				return [];
+
 			//For each key in object
 			for (var key in root)
 				if (root.hasOwnProperty (key))
@@ -227,10 +242,12 @@ module.exports = function(Meteor) {
 					entries.push([key,root[key]]);
 			//REturn keys
 			return entries;
-			
 		};
 
 		this.delete = function(key) {
+			if (!root)
+				return;
+
 			if (!root.hasOwnProperty(key))
 				return;
 
