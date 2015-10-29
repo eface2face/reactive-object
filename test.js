@@ -17,7 +17,7 @@ var ReactiveObject = require('./index.js')(Meteor);
 test('Observe simple object', function (t) {
 	Meteor.Tracker.changed = function() {
 		debug('Meteor.Tracker.changed'); 
-		t.ok(true)
+		t.ok(true,"Changed");
 	};
 	//Only one expected
 	t.plan(1);
@@ -32,7 +32,7 @@ test('Observe simple object', function (t) {
 test('Observe nested object', function (t) {
 	Meteor.Tracker.changed = function() {
 		debug('Meteor.Tracker.changed'); 
-		t.ok(true)
+		t.ok(true,"Changed");
 	};
 	//Only one expected
 	t.plan(1);
@@ -47,7 +47,7 @@ test('Observe nested object', function (t) {
 test('Observe nested array', function (t) {
 	Meteor.Tracker.changed = function() {
 		debug('Meteor.Tracker.changed'); 
-		t.ok(true)
+		t.ok(true,"Changed");
 	};
 	//Only one expected
 	t.plan(1);
@@ -62,7 +62,7 @@ test('Observe nested array', function (t) {
 test('Observe added nested object', function (t) {
 	Meteor.Tracker.changed = function() {
 		debug('Meteor.Tracker.changed'); 
-		t.ok(true)
+		t.ok(true,"Changed");
 	};
 	//Only one expected
 	t.plan(2);
@@ -77,14 +77,14 @@ test('Observe added nested object', function (t) {
 	setTimeout (function() {
 		debug('Changed nested object');
 		o.a.b = 2;
-	},10);
+	},1);
 });
 
 
 test('Observe nested object delete', function (t) {
 	Meteor.Tracker.changed = function() {
 		debug('Meteor.Tracker.changed'); 
-		t.ok(true)
+		t.ok(true,"Changed");
 	};
 	//Only two expected
 	t.plan(2);
@@ -99,13 +99,13 @@ test('Observe nested object delete', function (t) {
 	setTimeout (function() {
 		debug('Delete nested object');
 		delete o.a;
-	},10);
+	},1);
 	
 	//Change it later
 	setTimeout (function() {
 		debug('Changed nested object');
 		a = 2;
-	},10);
+	},1);
 });
 
 test('Setter', function (t) {
@@ -123,26 +123,10 @@ test('Setter', function (t) {
 	t.ok(a.b==2);
 });
 
-
-test('Nested setter', function (t) {
-	Meteor.Tracker.changed = function() {
-		debug('Meteor.Tracker.changed'); 
-	};
-	//Only one expected
-	t.plan(1);
-	var a = { b: { c: 1 }};
-	//Create reactive object
-	var r = new ReactiveObject(a);
-	//Set it
-	r.set('b.c', 2);
-	//Check values
-	t.ok(a.b.c==2);
-});
-
 test('Observe simple object, start empty', function (t) {
 	Meteor.Tracker.changed = function() {
 		debug('Meteor.Tracker.changed'); 
-		t.ok(true)
+		t.ok(true,"Changed");
 	};
 	//Only one expected
 	t.plan(2);
@@ -157,14 +141,14 @@ test('Observe simple object, start empty', function (t) {
 	setTimeout (function() {
 		debug('Changed nested object');
 		o.a = 2;
-	},10);
+	},1);
 });
 
 
 test('Observe array delete', function (t) {
 	Meteor.Tracker.changed = function() {
 		debug('Meteor.Tracker.changed'); 
-		t.ok(true)
+		t.ok(true,"Changed");
 	};
 	//Only one expected
 	t.plan(2);
@@ -179,14 +163,14 @@ test('Observe array delete', function (t) {
 	setTimeout (function() {
 		debug('Changed nested object');
 		o.a[0].id = 3;
-	},10);
+	},1);
 });
 
 
 test('Observe array add', function (t) {
 	Meteor.Tracker.changed = function() {
 		debug('Meteor.Tracker.changed'); 
-		t.ok(true)
+		t.ok(true,"Changed");
 	};
 	//Only one expected
 	t.plan(2);
@@ -201,8 +185,29 @@ test('Observe array add', function (t) {
 	setTimeout (function() {
 		debug('Changed nested object');
 		o.a[2].id = 4;
-	},10);
+	},1);
 });
 
 
 //TODO: Add tests for keys(),values(),entries(),has()
+test('Setter simple object', function (t) {
+	Meteor.Tracker.changed = function() {
+	};
+	//Two expected
+	t.plan(5);
+	//Object
+	var o = { a: 1 };
+	//Create reactive object
+	var r = new ReactiveObject();
+	//Set empty
+	r.set({});
+	//Add value
+	r.set("1",o);
+	//Check
+	t.ok(r.get("1")===o, "Checking setter");
+	//Get values
+	t.ok(r.keys().length===1 ,"Checking keys length");
+	t.ok(r.keys()[0]==="1", "Checking keys value");
+	t.ok(r.values().length===1, "Checking values length");
+	t.ok(r.values()[0] === o, "Checking values value");
+});

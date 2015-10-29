@@ -18,7 +18,7 @@ module.exports = function(Meteor) {
 		var dep  = new Tracker.Dependency;
 
 		var observer = function (changes) {
-			debug('changes observed: %o', changes);
+			//debug('changes observed: %o', changes);
 
 			//For each change
 			changes.forEach(function(change) {
@@ -67,7 +67,7 @@ module.exports = function(Meteor) {
 			if (object && typeof object === 'object') {
 				//Check type of observerd object
 				if (Array.isArray(object)) {
-					debug('unobserving array: %o', object);
+					//debug('unobserving array: %o', object);
 
 					//Observe object first
 					Object.unobserve(object,observer);
@@ -77,7 +77,7 @@ module.exports = function(Meteor) {
 						unobserve(value);
 					});
 				} else {
-					debug('unobserving object: %o', object);
+					//debug('unobserving object: %o', object);
 
 					//Observe object first
 					Object.unobserve(object,observer);
@@ -101,7 +101,7 @@ module.exports = function(Meteor) {
 			{
 				//Check type of observerd object
 				if (Array.isArray(object)) {
-					debug('observing array: %o', object);
+					//debug('observing array: %o', object);
 
 					//Observe array for splice
 					Array.observe(object,observer,["add", "update", "delete","splice"]);
@@ -111,7 +111,7 @@ module.exports = function(Meteor) {
 						observe(value);
 					});
 				} else {
-					debug('observing object: %o', object);
+					//debug('observing object: %o', object);
 
 					//Observe object first
 					Object.observe(object,observer,["add", "update", "delete"]);
@@ -170,8 +170,10 @@ module.exports = function(Meteor) {
 				unobserve(object);
 				//Set property
 				root[key] = value;
+
 				//Observe new one
 				observe(value);
+
 			}
 		};
 		
@@ -199,11 +201,13 @@ module.exports = function(Meteor) {
 			if(Tracker.active)
 				//Add a dependency
 				dep.depend();
+
 			//For each key in object
-			for (var key in Object.keys(root))
+			for (var key in root)
 				if (root.hasOwnProperty (key))
 					//Add to values
 					values.push(root[key]);
+
 			//REturn keys
 			return values;
 			
@@ -215,8 +219,9 @@ module.exports = function(Meteor) {
 			if(Tracker.active)
 				//Add a dependency
 				dep.depend();
+			
 			//For each key in object
-			for (var key in Object.keys(root))
+			for (var key in root)
 				if (root.hasOwnProperty (key))
 					//Add to values
 					entries.push([key,root[key]]);
