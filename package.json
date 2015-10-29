@@ -1,6 +1,6 @@
 {
   "name": "reactive-object",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Reactive object for Tracker",
   "main": "index.js",
   "scripts": {
